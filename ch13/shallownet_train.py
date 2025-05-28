@@ -21,6 +21,8 @@ import argparse
 ap = argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", required=True, 
     help="path to the input dataset")
+ap.add_argument("-m", "--model", required=True, 
+    help="path to output model")
 ap.add_argument("-e", "--epochs", type=int, default=10,
                 help="Number of training epochs (default: 10)")
 args = vars(ap.parse_args())
@@ -63,6 +65,10 @@ epochs = args["epochs"]
 print(f"[INFO] training network for {epochs} epochs ...")
 H = model.fit(trainX, trainY, validation_data=(testX, testY), 
     batch_size=32, epochs=epochs, verbose=1)
+
+# save the model to the disk
+print("[INFO] serializing network ...")
+model.save(args["model"])
 
 print("[INFO] evaluating network ...")
 predictions = model.predict(testX, batch_size=32)
