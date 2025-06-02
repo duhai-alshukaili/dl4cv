@@ -1,20 +1,14 @@
-from multiprocessing import pool
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Conv2D
-from tensorflow.keras.layers import MaxPooling2D
-from tensorflow.keras.layers import Activation
-from tensorflow.keras.layers import Flatten
-from tensorflow.keras.layers import Dense
-from tensorflow.keras import backend as K
-
+import keras
+from keras import layers
+from keras import backend as K
 
 class LeNet:
 
     @staticmethod
-    def build(width, height, depth, classes) -> Sequential:
+    def build(width, height, depth, classes) -> keras.Sequential:
 
         #intialize the model
-        model = Sequential()
+        model = keras.Sequential()
         inputShape = (height, width, depth)
 
         # if we are using "channels first", update the shape
@@ -22,26 +16,24 @@ class LeNet:
             inputShape = (depth, height, width)
         
         # first set of CONV => RELU => POOL layers
-        model.add(Conv2D(20, (5, 5), padding="same", input_shape=inputShape))
-        model.add(Activation("relu"))
-        model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2)))
+        model.add(layers.Input(shape=inputShape))
+        model.add(layers.Conv2D(20, (5, 5), padding="same"))
+        model.add(layers.Activation("relu"))
+        model.add(layers.MaxPooling2D(pool_size=(2,2), strides=(2,2)))
 
         # second set of CONV => RELU => POOL layers
-        model.add(Conv2D(50, (5, 5), padding="same"))
-        model.add(Activation("relu"))
-        model.add(MaxPooling2D(pool_size=(2,2), strides=(2,2)))
+        model.add(layers.Conv2D(50, (5, 5), padding="same"))
+        model.add(layers.Activation("relu"))
+        model.add(layers.MaxPooling2D(pool_size=(2,2), strides=(2,2)))
 
         # first and only set of FC => RELU
-        model.add(Flatten())
-        model.add(Dense(50))
-        model.add(Activation("relu"))
+        model.add(layers.Flatten())
+        model.add(layers.Dense(50))
+        model.add(layers.Activation("relu"))
 
         # softmax classifier
-        model.add(Dense(classes))
-        model.add(Activation("softmax"))
-
-
-
+        model.add(layers.Dense(classes))
+        model.add(layers.Activation("softmax"))
 
         # return the constructed network architecture
         return model
