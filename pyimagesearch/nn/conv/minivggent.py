@@ -1,14 +1,8 @@
 # import the ncessary packages
-from statistics import mode
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import BatchNormalization
-from tensorflow.keras.layers import Conv2D
-from tensorflow.keras.layers import MaxPooling2D
-from tensorflow.keras.layers import Activation
-from tensorflow.keras.layers import Flatten
-from tensorflow.keras.layers import Dense
-from tensorflow.keras.layers import Dropout
-from tensorflow.keras import backend as K
+import keras
+from keras import layers
+from keras import backend as K
+
 
 import tensorflow as tf
 
@@ -17,7 +11,7 @@ class MiniVGGNet:
 
     @staticmethod
     def build(width, height, depth, classes):
-        model = Sequential()
+        model = keras.Sequential()
         inputShape = (height, width, depth)
         chanDim = -1
 
@@ -26,38 +20,38 @@ class MiniVGGNet:
             chanDim = 1
         
 
+        # Input Layer
+        model.add(layers.Input(shape=inputShape))
+
         # first CONV => RELU => CONV => RELU => POOL layer set
-        model.add(Conv2D(32, (3,3), padding="same", input_shape=inputShape))
-        model.add(Activation("relu"))
-        model.add(BatchNormalization(axis=chanDim))
-        model.add(Conv2D(32, (3,3), padding="same"))
-        model.add(Activation("relu"))
-        model.add(MaxPooling2D(pool_size=(2,2)))
-        model.add(Dropout(0.25))
+        model.add(layers.Conv2D(32, (3,3), padding="same"))
+        model.add(layers.Activation("relu"))
+        model.add(layers.BatchNormalization(axis=chanDim))
+        model.add(layers.Conv2D(32, (3,3), padding="same"))
+        model.add(layers.Activation("relu"))
+        model.add(layers.BatchNormalization(axis=chanDim))
+        model.add(layers.MaxPooling2D(pool_size=(2,2)))
+        model.add(layers.Dropout(0.25))
 
         # second CONV => RELU => CONV => RELU => POOL layer set
-        model.add(Conv2D(64, (3,3), padding="same"))
-        model.add(Activation("relu"))
-        model.add(BatchNormalization(axis=chanDim))
-        model.add(Conv2D(64, (3,3), padding="same"))
-        model.add(Activation("relu"))
-        model.add(MaxPooling2D(pool_size=(2,2)))
-        model.add(Dropout(0.25))
+        model.add(layers.Conv2D(64, (3,3), padding="same"))
+        model.add(layers.Activation("relu"))
+        model.add(layers. BatchNormalization(axis=chanDim))
+        model.add(layers.Conv2D(64, (3,3), padding="same"))
+        model.add(layers.Activation("relu"))
+        model.add(layers. BatchNormalization(axis=chanDim))
+        model.add(layers.MaxPooling2D(pool_size=(2,2)))
+        model.add(layers.Dropout(0.25))
 
         # first and only set of FC => RELU 
-        model.add(Flatten())
-        model.add(Dense(512))
-        model.add(Activation("relu"))
-        model.add(BatchNormalization(axis=chanDim))
-        model.add(Dropout(0.5))
+        model.add(layers.Flatten())
+        model.add(layers.Dense(512))
+        model.add(layers.Activation("relu"))
+        model.add(layers.BatchNormalization(axis=chanDim))
+        model.add(layers.Dropout(0.5))
 
         # softmax classifier
-        model.add(Dense(classes))
-        model.add(Activation("softmax"))
-
-
-
-
-
+        model.add(layers.Dense(classes))
+        model.add(layers.Activation("softmax"))
 
         return model
