@@ -44,7 +44,7 @@ labelNames = ["airplane", "automobile", "bird", "cat", "deer",
 
 # initialize the optimizer and model
 print("[INFO] compiling model ...")
-opt = optimizers.SGD(learning_rate=0.01)
+opt = optimizers.SGD(learning_rate=0.01, weight_decay=0.01/40, momentum=0.9, nesterov=True)
 model = MiniVGGNet.build(width=32, height=32, depth=3, classes=10)
 model.compile(loss="categorical_crossentropy", optimizer=opt, 
     metrics=["accuracy"])
