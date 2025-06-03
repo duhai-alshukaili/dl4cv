@@ -4,6 +4,9 @@ import sys, pathlib
 project_root = pathlib.Path(__file__).resolve().parents[1]
 sys.path.append(str(project_root))
 
+import matplotlib
+matplotlib.use("Agg")
+
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.metrics import classification_report
 from pyimagesearch.nn.conv import MiniVGGNet
@@ -39,8 +42,6 @@ testY = lb.fit_transform(testY)
 labelNames = ["airplane", "automobile", "bird", "cat", "deer", 
     "dog", "frog", "horse", "ship", "truck"]
 
-
-
 # initialize the optimizer and model
 print("[INFO] compiling model ...")
 opt = optimizers.SGD(learning_rate=0.01)
@@ -64,7 +65,7 @@ print(classification_report(testY.argmax(axis=1),
 
 
 # plot the training loss and accuracy
-plt.style.use("Agg")
+
 plt.figure()
 plt.plot(np.arange(0, epochs), H.history["loss"], label="train_loss")
 plt.plot(np.arange(0, epochs), H.history["val_loss"], label="val_loss")
