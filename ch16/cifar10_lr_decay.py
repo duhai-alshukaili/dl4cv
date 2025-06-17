@@ -9,9 +9,10 @@ matplotlib.use("Agg")
 
 from sklearn.preprocessing import LabelBinarizer
 from sklearn.metrics import classification_report
-from pyimagesearch.nn.conv import VGGNet5
+from pyimagesearch.nn.conv import MiniVGGNet
 from keras import optimizers
 from keras import datasets
+from keras import callbacks
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -24,6 +25,20 @@ ap.add_argument("-o", "--output", required=True,
 ap.add_argument("-e", "--epochs", type=int, default=10,
                 help="Number of training epochs (default: 10)")
 args = vars(ap.parse_args())
+
+# custome learning rate decay scheduler
+def step_decay(epoch):
+    # intitialize the base initial learning rate, drop factror and 
+    # epochs to drop every
+    init_alpha = 0.01
+    factor = 0.25
+    drop_every = 5
+
+    # compute the learning rate for the current epoch
+    alpha = init_alpha * (factor ** np.floor(1 + epoch) / drop_every)
+
+    return float(alpha)
+
 
 # grab the mnist data set.
 print("[INFO] accessing CIFAR-10 ...")
@@ -42,25 +57,24 @@ testY = lb.fit_transform(testY)
 labelNames = ["airplane", "automobile", "bird", "cat", "deer", 
     "dog", "frog", "horse", "ship", "truck"]
 
+# define a set of callback to be passed to the model
+# during the training
+callbacks = [callbacks.LearningRateScheduler(schedule=step_decay)]
+
+# initialize the optimizer and model
+print("[INFO] compiling model ...")
+opt = optimizers.SGD(learning_rate=0.01, weight_decay=0.01/40, momentum=0.9, nesterov=True)
+model = MiniVGGNet.build(width=32, height=32, depth=3, classes=10)
+model.compile(loss="categorical_crossentropy", optimizer=opt, 
+    metrics=["accuracy"])
 
 # get the number of epochs
 epochs = args["epochs"]
 
-# initialize the optimizer and model
-print("[INFO] compiling model ...")
-
-# rule of thumb: decay = learning rate / # of epochs
-opt = optimizers.SGD(learning_rate=0.01, weight_decay=0.01/epochs, momentum=0.9, nesterov=True)
-model = VGGNet5.build(width=32, height=32, depth=3, classes=10)
-print(model.summary())
-
-model.compile(loss="categorical_crossentropy", optimizer=opt, 
-    metrics=["accuracy"])
-
 # train the network
 print(f"[INFO] training network for {epochs} epochs ...")
 H = model.fit(trainX, trainY, validation_data=(testX, testY), 
-    batch_size=32, epochs=epochs, verbose=1)
+    batch_size=64, callbacks=callbacks, epochs=epochs, verbose=1)
 
 print("[INFO] evaluating network ...")
 predictions = model.predict(testX, batch_size=32)
