@@ -51,8 +51,8 @@ labelNames = ["airplane", "automobile", "bird", "cat", "deer",
     "dog", "frog", "horse", "ship", "truck"]
 
 # construct and set the callback
-fig_path = os.path.sep.join(args["output"], f"{os.getpid()}.png")
-json_path = os.path.sep.join(args["output"], f"{os.getpid()}.json")
+fig_path = os.path.sep.join([args["output"], f"{os.getpid()}.png"])
+json_path = os.path.sep.join([args["output"], f"{os.getpid()}.json"])
 callbacks = [TrainingMonitor(figPath=fig_path, jsonPath=json_path)]
 
 # initialize the optimizer and model
