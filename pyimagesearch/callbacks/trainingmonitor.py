@@ -1,11 +1,11 @@
 # import the ncessary packages
-from tensorflow.keras.callbacks import BaseLogger
+from keras import callbacks
 import matplotlib.pyplot as plt
 import numpy as np
 import json
 import os
 
-class TrainingMonitor(BaseLogger):
+class TrainingMonitor(callbacks.Callback):
     def __init__(self, figPath, jsonPath=None, startAt=0):
         super(TrainingMonitor, self).__init__()
         self.figPath = figPath
