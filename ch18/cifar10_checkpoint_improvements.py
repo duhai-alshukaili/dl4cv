@@ -56,12 +56,15 @@ model = MiniVGGNet.build(width=32, height=32, depth=3, classes=10)
 model.compile(loss="categorical_crossentropy", optimizer=opt, 
     metrics=["accuracy"])
 
-# construct 
+# construct a file path for saving the weights of the model (i.e., .h5 extension)
+# If you want to save the full model, use .keras extention
 fname = os.path.sep.join([args["weights"], 
-                         "weights-{epoch:03d}-{val_loss:.4f}.hdf"])
+                         "weights-{epoch:03d}-{val_loss:.4f}.h5"])
 
+# see the following for updates on model checkpointing for keras >= 3.0
+# https://keras.io/guides/migrating_to_keras_3/#saving-a-model-in-the-tf-savedmodel-format
 checkpoint = callbacks.ModelCheckpoint(fname, monitor="val_loss", mode="min", 
-                                       save_best_only=True, verbose=1)
+                                       save_best_only=True, save_weights_only=True ,verbose=1)
 callbacks = [checkpoint]
 
 # train the network
