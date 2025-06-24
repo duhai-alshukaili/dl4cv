@@ -57,8 +57,8 @@ model.compile(loss="categorical_crossentropy", optimizer=opt,
     metrics=["accuracy"])
 
 # construct 
-fname = os.path.sep.join(args["weights"], 
-                         "weights-{epoch:03d}-{val_loss:.4f}.hdf")
+fname = os.path.sep.join([args["weights"], 
+                         "weights-{epoch:03d}-{val_loss:.4f}.hdf"])
 
 checkpoint = callbacks.ModelCheckpoint(fname, monitor="val_loss", mode="min", 
                                        save_best_only=True, verbose=1)
